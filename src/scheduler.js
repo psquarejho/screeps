@@ -1,17 +1,19 @@
-var joblist = { 
-    upgrader: require('job.upgrader'),
-};
-
+var jobs = require('jobs');
+var queues = require('queues')
 var scheduler = {
     /** @param {Array} jobqueue **/
-    run: function(jobqueue)
+    run: function(room,jobqueue)
     {
-        console.log(joblist);
-        for(var i in joblist)
+        console.log(jobqueue);
+        for(var i in jobs)
         {
-            var j = joblist[i];
-            j.needsScheduling();
+            var j = jobs[i];
+            if(j.needsScheduling(j))
+            {
+                jobqueue = queues.addJob(jobqueue,j);      
+            }
         }
+        return jobqueue;
     }
 }
 
