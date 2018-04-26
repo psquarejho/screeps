@@ -10,7 +10,8 @@ var scheduler = {
             var j = jobs[i];
             if(j.needsScheduling(j))
             {
-                jobqueue = queues.addJob(jobqueue,j);      
+                var jo = j.createJobs();
+                jobqueue = queues.addJob(jobqueue,jo);      
             }
         }
         return jobqueue;

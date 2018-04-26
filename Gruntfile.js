@@ -1,8 +1,7 @@
 module.exports = function(grunt) {
 
     // parameters
-    //var private_directory = grunt.option('private_directory');
-    var private_directory = '/c/Users/jho/AppData/Local/Screeps/scripts/pouf___21025';
+    //var private_directory = grunt.option('private_directory');   
     grunt.loadNpmTasks('grunt-screeps')
     grunt.loadNpmTasks('grunt-contrib-clean')
     grunt.loadNpmTasks('grunt-contrib-copy')

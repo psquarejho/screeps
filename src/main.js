@@ -1,5 +1,9 @@
 var scheduler = require("scheduler");
 var ressourceassigner = require("ressourceassigner");
+var queues = require("queues");
+var spawner = require("spawner");
+var jobrunner = require("jobrunner");
+
 var rooms = Game.rooms;
 /* Howto respawn
    Place spawn point
@@ -10,21 +14,17 @@ module.exports.loop = function () {
     //var room = null;
     //var towersNeedingEnergy = room.find(FIND_MY_STRUCTURES, {filter: function(o) { return (o.structureType == STRUCTURE_TOWER && o.energy < (o.energyCapacity-100)) }});
     //console.log("Energy: "+room.energyAvailable+"/"+room.energyCapacityAvailable + " Towers needing energy: "+towersNeedingEnergy.length);
-    if(Memory.queues == undefined)
-    {
-        Memory.queues = {};
-    }
     for(var r in Game.rooms)
     {
-        var queue = Memory.queues[r];
-        if(queue == undefined)
-        {
-            queue = [];
-        }
+        var queue = queues.getQueue(r); 
         console.log("Running scheduler for room "+r);
         queue = scheduler.run(r,queue);
-        Memory.queues[r] = queue;
-        ressourceassigner.assignCreeps(r);
+        queues.setQueue(r,queue);
+        var runspawner = ressourceassigner.assignCreeps(r);
+        if(runspawner) { spawner.run(r) };
+        jobrunner.run(r);
+        
+        
     }
 
     /* for(var name in Game.creeps) {

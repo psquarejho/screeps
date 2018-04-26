@@ -9,45 +9,46 @@ var ressourceassigner = {
 
         for(var c in Game.creeps)
         {
-            if(Game.creeps[c].room == room)
+            if(Game.creeps[c].room.name == room)
             {
                 availablecreeps[c] = Game.creeps[c];
             }
         }
+        console.log("Available Creeps: "+JSON.stringify(availablecreeps));
         var tospawn = 0;
         var jobsbelowminimum = [];
-        console.log(JSON.stringify(queue));
-        for(var i = 0; i < queue.length; i++)
+        console.log("Queue: "+JSON.stringify(queue));
+        for(var i = 0; i < queue.jobs.length; i++)
         {
-            var jo = queue[i];
-            console.log(JSON.stringify(jo));
+            var jo = queue.jobs[i];
             var j = jo.jobType;
             var ji = jobs[j].getJobId(ji);
             // Remove stale creeps from the assignedCreeps object
-            for(var c in jo.assignedCreeps)
+            for(var c in jo.creeps)
             {
                 if(availablecreeps[c] == undefined)
                 {
-                    jo.assignedCreeps[c];
+                    jo.creeps[c];
                 }
             }
-            while(false && Object.keys(jo.assignedCreeps).length < jo.assignCreepLevels.min)
+            while(Object.keys(availablecreeps).length > 0 && Object.keys(jo.creeps).length < jo.assignCreepLevels.min)
             {
+                console.log(JSON.stringify(availablecreeps));
                 var cname = Object.keys(availablecreeps)[0];
                 var c = availablecreeps[cname];
                 delete availablecreeps[cname];
-                console.log("Trying to assign "+cname+" to job "+jobs[jobType].getJobId(j));
-                j.assignedCreeps[cname] = true;
+                console.log("Trying to assign "+cname+" to job "+ji);
+                jo.creeps[cname] = true;
                 if(Object.keys(availablecreeps).length == 0)
                 {
                     break;
                 }
             }
-            console.log(JSON.stringify(jo.assignedCreeps));
-            tospawn += jo.assignCreepLevels.min; //- Object.keys(jo.assignedCreeps).length;
+            tospawn += jo.assignCreepLevels.min - Object.keys(jo.creeps).length;
             jobsbelowminimum.push(ji);
         }
         console.log("Need to spawn "+tospawn+" creeps for jobs "+jobsbelowminimum.join(","));
+        return (tospawn > 0);
     }
 
 
